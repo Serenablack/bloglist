@@ -1,0 +1,10 @@
+post http://localhost:3003/api/blogs
+content-type:application/json
+
+{ "title": "Stay green stay healthy",
+  "author": "healthy lady",
+  "url": "http://healthyladyloveslife238974oerwm.com",
+  "likes": "2500000"}
+###
+  get http://localhost:3003/api/blogs
+  
