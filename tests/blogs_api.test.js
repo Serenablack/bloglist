@@ -50,7 +50,7 @@ test("a specific blog is present in the resturned bloglist", async () => {
 
 test("the unique identifier property of the blog posts is its id", async () => {
   const blog = await Blog.find({});
-  console.log(blog);
+
   expect(blog[0]._id).toBeDefined();
 });
 
@@ -71,6 +71,27 @@ test("a valid blog is added", async () => {
   const title = response.body.map((x) => x.title);
   expect(response.body).toHaveLength(newBlog.length + 1);
   expect(title).toContain("First class tests");
+});
+
+test("blog without likes will default to the value 0", async () => {
+  const createdBlog = {
+    title: "First class tests",
+    author: "Robert C. Martin",
+    url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
+  };
+
+  await api
+    .post("/api/blogs")
+    .send(createdBlog)
+    .expect(201)
+    .expect("Content-Type", /application\/json/);
+
+  const response = await api.get("/api/blogs");
+  console.log(response.body);
+  const blog = response.body.map((x) => x);
+  console.log(blog);
+  const blogPosted = await blog.find((x) => x.title === "First class tests");
+  expect(blogPosted.likes).toBe(0);
 });
 
 afterAll(() => {
