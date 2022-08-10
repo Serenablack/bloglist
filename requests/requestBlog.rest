@@ -7,4 +7,14 @@ content-type:application/json
   "likes": "2500000"}
 ###
   get http://localhost:3003/api/blogs
+
+
+###
+  post http://localhost:3003/api/blogs
+content-type:application/json
+
+{ 
+  "author": "healthy lady",
+  
+  "likes": "2500000"}
   

@@ -76,25 +76,21 @@ test("blog without likes will default to the value 0", async () => {
   expect(blogPosted.likes).toBe(0);
 });
 
-test("blog without likes will default to the value 0", async () => {
+test(" if there is no title and url properties,status code 400 Bad Request is sent as response", async () => {
   const createdBlog = {
-    title: "First class tests",
     author: "Robert C. Martin",
-    url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
+    likes: 10,
   };
-
   await api
     .post("/api/blogs")
     .send(createdBlog)
-    .expect(201)
+    .expect(400)
     .expect("Content-Type", /application\/json/);
 
-  const bloginDB = await helper.blogsInDb();
-  const blog = bloginDB.map((x) => x);
-  const blogPosted = await blog.find((x) => x.title === "First class tests");
-  expect(blogPosted.likes).toBe(0);
-});
+  const blogsInDb = await helper.blogsInDb();
 
+  expect(blogsInDb).toHaveLength(helper.newBlog.length);
+});
 afterAll(() => {
   mongoose.connection.close();
 });
