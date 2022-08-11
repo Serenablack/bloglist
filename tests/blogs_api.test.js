@@ -112,6 +112,55 @@ describe("deletion of a blog", () => {
   });
 });
 
+describe("update of a blog", () => {
+  test("succeeds with status code 200 if id is valid", async () => {
+    const blogsBefore = await helper.blogsInDb();
+    const blogToDelete = blogsBefore[0];
+
+    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+
+    const blogsAfter = await helper.blogsInDb();
+
+    expect(blogsAfter).toHaveLength(helper.newBlog.length - 1);
+
+    const title = blogsAfter.map((r) => r.title);
+
+    expect(title).not.toContain(blogToDelete.title);
+  });
+});
+
+test("Blog update successful", async () => {
+  const Blogtobeupdated = {
+    title: "Type wars",
+    author: "Robert C. Martin",
+    url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
+    likes: 2,
+  };
+
+  await api.post("/api/blogs").send(Blogtobeupdated).expect(201);
+
+  const allBlogs = await helper.blogsInDb();
+  const blogToUpdate = allBlogs.find(
+    (blog) => blog.title === Blogtobeupdated.title
+  );
+
+  const updatedBlog = {
+    ...blogToUpdate,
+    likes: blogToUpdate.likes + 1,
+  };
+
+  await api
+    .put(`/api/blogs/${blogToUpdate.id}`)
+    .send(updatedBlog)
+    .expect(200)
+    .expect("Content-Type", /application\/json/);
+
+  const blogsAfter = await helper.blogsInDb();
+  expect(blogsAfter).toHaveLength(helper.newBlog.length + 1);
+  const blogupdated = blogsAfter.find((blog) => blog.likes === 3);
+  expect(blogupdated.likes).toBe(3);
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });

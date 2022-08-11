@@ -18,3 +18,9 @@ content-type:application/json
   "likes": "2500000"}
 ###
   delete http://localhost:3003/api/blogs/62ee73206607468d28b57255
+
+###
+put http://localhost:3003/api/blogs/62f4c56bda7a2087ba309ac0
+content-type:application/json
+
+{  }
