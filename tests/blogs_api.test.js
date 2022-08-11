@@ -112,24 +112,7 @@ describe("deletion of a blog", () => {
   });
 });
 
-describe("update of a blog", () => {
-  test("succeeds with status code 200 if id is valid", async () => {
-    const blogsBefore = await helper.blogsInDb();
-    const blogToDelete = blogsBefore[0];
-
-    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
-
-    const blogsAfter = await helper.blogsInDb();
-
-    expect(blogsAfter).toHaveLength(helper.newBlog.length - 1);
-
-    const title = blogsAfter.map((r) => r.title);
-
-    expect(title).not.toContain(blogToDelete.title);
-  });
-});
-
-test("Blog update successful", async () => {
+test("update of a blog", async () => {
   const Blogtobeupdated = {
     title: "Type wars",
     author: "Robert C. Martin",
