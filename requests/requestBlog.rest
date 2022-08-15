@@ -5,6 +5,7 @@ content-type:application/json
   "author": "healthy lady",
   "url": "http://healthyladyloveslife238974oerwm.com",
   "likes": "2500000"}
+
 ###
   get http://localhost:3003/api/blogs
 ###
@@ -30,7 +31,7 @@ post http://localhost:3003/api/users
 content-type:application/json
 
 {
-    "username": "gema",
+    "username": "zeA",
     "name": "Superuser",
     "password": "theve"
 }
