@@ -7,7 +7,8 @@ content-type:application/json
   "likes": "2500000"}
 ###
   get http://localhost:3003/api/blogs
-
+###
+get http://localhost:3003/api/users
 
 ###
   post http://localhost:3003/api/blogs
@@ -24,3 +25,12 @@ put http://localhost:3003/api/blogs/62f4c56bda7a2087ba309ac0
 content-type:application/json
 
 {  }
+###
+post http://localhost:3003/api/users
+content-type:application/json
+
+{
+    "username": "gema",
+    "name": "Superuser",
+    "password": "theve"
+}
