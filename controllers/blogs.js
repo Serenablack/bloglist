@@ -1,8 +1,10 @@
+const jwt = require("jsonwebtoken");
 const blogsRouter = require("express").Router();
 // const { response } = require("express");
 const Blog = require("../models/blog");
 const User = require("../models/user");
-const helper = require("../tests/test_helper");
+
+// const userExtractor = require("../utils/middleware");
 
 blogsRouter.get("/", async (request, response, next) => {
   try {
@@ -15,15 +17,24 @@ blogsRouter.get("/", async (request, response, next) => {
 
 blogsRouter.post("/", async (request, response, next) => {
   const blog = new Blog(request.body);
-  const UsersInDb = await helper.usersInDb();
-  let randomUser = UsersInDb[Math.floor(Math.random() * UsersInDb.length)];
-  const username = randomUser.username;
+  const username = request.user;
+  console.log(username);
+  // const UsersInDb = await helper.usersInDb();
+  // let randomUser = UsersInDb[Math.floor(Math.random() * UsersInDb.length)];
+  // const username = randomUser.username;
+  const token = request.token;
 
-  const user = await User.findOne({ username });
-  console.log(user);
+  const decodedToken = jwt.verify(token, process.env.SECRET);
+
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: "token missing or invalid" });
+  }
+  const user = await User.findById(decodedToken.id);
+
+  // const user = await User.findOne({ username });
 
   if (!blog.title && !blog.url) {
-    response.status(400).json("Bad Request");
+    return response.status(400).json("Bad Request");
   } else {
     if (!blog.likes) {
       blog["likes"] = 0;
@@ -40,12 +51,23 @@ blogsRouter.post("/", async (request, response, next) => {
   }
 });
 
-blogsRouter.delete("/:id", async (req, res, next) => {
-  try {
-    await Blog.findByIdAndRemove(req.params.id);
-    res.status(204).end();
-  } catch (error) {
-    next(error);
+blogsRouter.delete("/:id", async (request, response, next) => {
+  const token = request.token;
+  const decodedToken = jwt.verify(token, process.env.SECRET);
+
+  const user = await User.findById(decodedToken.id);
+  const blogDelete = await Blog.findById(request.params.id);
+
+  if (blogDelete.user._id.toString() === user._id.toString()) {
+    console.log("delete");
+    await Blog.findByIdAndRemove(request.params.id);
+    try {
+      response.status(204).end();
+    } catch (error) {
+      next(error);
+    }
+  } else {
+    return response.status(401).json({ error: "Invalid move" });
   }
 });
 

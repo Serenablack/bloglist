@@ -1,13 +1,14 @@
 post http://localhost:3003/api/blogs
 content-type:application/json
+Authorization:bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InplQSIsImlkIjoiNjJmYTFjYzRiOTg5YTBhODE3Yjk4ODg0IiwiaWF0IjoxNjYwNjQ3NjE2fQ.s2pDEHZpXXrZ6nkr96nZZwHIu283t0VOpdhvTUVLBso
 
-{ "title": "Stay green stay healthy",
+{ "title": "blog created after delete api update",
   "author": "healthy lady",
   "url": "http://healthyladyloveslife238974oerwm.com",
-  "likes": "2500000"}
+  "likes": "5"}
 
 ###
-  get http://localhost:3003/api/blogs
+get http://localhost:3003/api/blogs
 ###
 get http://localhost:3003/api/users
 
@@ -19,7 +20,10 @@ content-type:application/json
   "author": "healthy lady",
   "likes": "2500000"}
 ###
-  delete http://localhost:3003/api/blogs/62ee73206607468d28b57255
+delete http://localhost:3003/api/blogs/62fb6b5f718c61a7ea5539a4
+###
+delete http://localhost:3003/api/blogs/62fb6b5f718c61a7ea5539a4
+Authorization:bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InplQSIsImlkIjoiNjJmYTFjYzRiOTg5YTBhODE3Yjk4ODg0IiwiaWF0IjoxNjYwNjQ3NjE2fQ.s2pDEHZpXXrZ6nkr96nZZwHIu283t0VOpdhvTUVLBso
 
 ###
 put http://localhost:3003/api/blogs/62f4c56bda7a2087ba309ac0

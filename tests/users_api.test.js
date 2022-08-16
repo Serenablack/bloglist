@@ -50,7 +50,7 @@ describe("when there is initially one user in db", () => {
       .expect(400)
       .expect("Content-Type", /application\/json/);
     expect(result.body.error).toContain(
-      "User validation failed.Username or password is shorter than three characters"
+      `is shorter than the minimum allowed length (3)`
     );
     const usersAtEnd = await helper.usersInDb();
     expect(usersAtEnd).toEqual(usersAtStart);
@@ -69,7 +69,7 @@ describe("when there is initially one user in db", () => {
       .expect(400)
       .expect("Content-Type", /application\/json/);
     expect(result.body.error).toContain(
-      "User validation failed.Username or password is shorter than three characters"
+      `is shorter than the minimum allowed length (3).`
     );
     const usersAtEnd = await helper.usersInDb();
     expect(usersAtEnd).toEqual(usersAtStart);

@@ -7,21 +7,18 @@ usersRouter.get("/", async (request, response) => {
     url: 1,
     title: 1,
     author: 1,
-    // id: 1,
+    id: 1,
+    likes: 1,
   });
-  response.json(users);
+  response.json(users.map((user) => user.toJSON()));
 });
 
 usersRouter.post("/", async (request, response, next) => {
   const { username, name, password } = request.body;
-  if (!(username && password) || password.length < 3) {
-    return response
-      .status(404)
-      .json({
-        error:
-          "User validation failed.Username or password is shorter than three characters",
-      })
-      .end();
+  if (!(username || password) || password.length < 3) {
+    return response.status(400).json({
+      error: `User validation failed: username: Path password is shorter than the minimum allowed length (3).`,
+    });
   } else {
     const existingUser = await User.findOne({ username });
     if (existingUser) {
