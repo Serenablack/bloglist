@@ -17,8 +17,8 @@ blogsRouter.get("/", async (request, response, next) => {
 
 blogsRouter.post("/", async (request, response, next) => {
   const blog = new Blog(request.body);
-  const username = request.user;
-  console.log(username);
+  // const username = request.user;
+  // console.log(username);
   // const UsersInDb = await helper.usersInDb();
   // let randomUser = UsersInDb[Math.floor(Math.random() * UsersInDb.length)];
   // const username = randomUser.username;
@@ -57,6 +57,7 @@ blogsRouter.delete("/:id", async (request, response, next) => {
 
   const user = await User.findById(decodedToken.id);
   const blogDelete = await Blog.findById(request.params.id);
+  console.log(blogDelete.user._id);
 
   if (blogDelete.user._id.toString() === user._id.toString()) {
     console.log("delete");

@@ -4,8 +4,11 @@ const supertest = require("supertest");
 const app = require("../app");
 const api = supertest(app);
 const Blog = require("../models/blog");
+const User = require("../models/user");
 
 beforeEach(async () => {
+  await User.deleteMany({});
+
   await Blog.deleteMany({});
   let blogObject = helper.newBlog.map((blog) => new Blog(blog));
   const promiseArray = blogObject.map((blog) => blog.save());
@@ -40,6 +43,24 @@ test("the unique identifier property of the blog posts is its id", async () => {
 });
 
 describe("addition of a new blog", () => {
+  let token;
+
+  beforeEach(async () => {
+    const newUser = {
+      username: "root",
+      name: "root",
+      password: "password",
+    };
+
+    await api.post("/api/users").send(newUser);
+
+    const result = await api.post("/api/login").send(newUser);
+
+    token = {
+      Authorization: `bearer ${result.body.token}`,
+    };
+  });
+
   test("a valid blog is added", async () => {
     const createdBlog = {
       title: "First class tests",
@@ -52,6 +73,7 @@ describe("addition of a new blog", () => {
       .post("/api/blogs")
       .send(createdBlog)
       .expect(201)
+      .set(token)
       .expect("Content-Type", /application\/json/);
     const blog = await helper.blogsInDb();
     const title = blog.map((x) => x.title);
@@ -69,6 +91,7 @@ describe("addition of a new blog", () => {
     await api
       .post("/api/blogs")
       .send(createdBlog)
+      .set(token)
       .expect(201)
       .expect("Content-Type", /application\/json/);
 
@@ -86,6 +109,7 @@ describe("addition of a new blog", () => {
     await api
       .post("/api/blogs")
       .send(createdBlog)
+      .set(token)
       .expect(400)
       .expect("Content-Type", /application\/json/);
 
@@ -96,11 +120,29 @@ describe("addition of a new blog", () => {
 });
 
 describe("deletion of a blog", () => {
+  let token;
+
+  beforeEach(async () => {
+    const newUser = {
+      username: "root",
+      name: "root",
+      password: "password",
+    };
+
+    await api.post("/api/users").send(newUser);
+
+    const result = await api.post("/api/login").send(newUser);
+
+    token = {
+      Authorization: `bearer ${result.body.token}`,
+    };
+  });
+
   test("succeeds with status code 204 if id is valid", async () => {
     const blogsBefore = await helper.blogsInDb();
     const blogToDelete = blogsBefore[0];
 
-    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+    await api.delete(`/api/blogs/${blogToDelete.id}`).set(token).expect(204);
 
     const blogsAfter = await helper.blogsInDb();
 
@@ -112,36 +154,57 @@ describe("deletion of a blog", () => {
   });
 });
 
-test("update of a blog", async () => {
-  const Blogtobeupdated = {
-    title: "Type wars",
-    author: "Robert C. Martin",
-    url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
-    likes: 2,
-  };
+describe("update of a blog", () => {
+  let token;
 
-  await api.post("/api/blogs").send(Blogtobeupdated).expect(201);
+  beforeEach(async () => {
+    const newUser = {
+      username: "root",
+      name: "root",
+      password: "password",
+    };
 
-  const allBlogs = await helper.blogsInDb();
-  const blogToUpdate = allBlogs.find(
-    (blog) => blog.title === Blogtobeupdated.title
-  );
+    await api.post("/api/users").send(newUser);
 
-  const updatedBlog = {
-    ...blogToUpdate,
-    likes: blogToUpdate.likes + 1,
-  };
+    const result = await api.post("/api/login").send(newUser);
 
-  await api
-    .put(`/api/blogs/${blogToUpdate.id}`)
-    .send(updatedBlog)
-    .expect(200)
-    .expect("Content-Type", /application\/json/);
+    token = {
+      Authorization: `bearer ${result.body.token}`,
+    };
+  });
 
-  const blogsAfter = await helper.blogsInDb();
-  expect(blogsAfter).toHaveLength(helper.newBlog.length + 1);
-  const blogupdated = blogsAfter.find((blog) => blog.likes === 3);
-  expect(blogupdated.likes).toBe(3);
+  test("update of a blog", async () => {
+    const Blogtobeupdated = {
+      title: "Type wars",
+      author: "Robert C. Martin",
+      url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
+      likes: 2,
+    };
+
+    await api.post("/api/blogs").send(Blogtobeupdated).set(token).expect(201);
+
+    const allBlogs = await helper.blogsInDb();
+    const blogToUpdate = allBlogs.find(
+      (blog) => blog.title === Blogtobeupdated.title
+    );
+
+    const updatedBlog = {
+      ...blogToUpdate,
+      likes: blogToUpdate.likes + 1,
+    };
+
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(updatedBlog)
+      .set(token)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+
+    const blogsAfter = await helper.blogsInDb();
+    expect(blogsAfter).toHaveLength(helper.newBlog.length + 1);
+    const blogupdated = blogsAfter.find((blog) => blog.likes === 3);
+    expect(blogupdated.likes).toBe(3);
+  });
 });
 
 afterAll(() => {
