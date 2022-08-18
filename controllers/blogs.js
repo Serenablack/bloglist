@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const blogsRouter = require("express").Router();
-// const { response } = require("express");
+const logger = require("../utils/logger");
+
 const Blog = require("../models/blog");
 const User = require("../models/user");
 
@@ -78,23 +79,35 @@ blogsRouter.put("/:id", async (req, res, next) => {
   if (!body.likes) {
     body["likes"] = 0;
   }
+  const token = req.token;
+  const decodedToken = jwt.verify(token, process.env.SECRET);
 
-  let blog = {
-    title: body.title,
-    author: body.author,
-    url: body.url,
-    likes: body.likes,
-  };
+  const user = await User.findById(decodedToken.id);
+  const blogUpdate = await Blog.findById(req.params.id);
 
-  try {
-    const blogtobeupdated = await Blog.findByIdAndUpdate(req.params.id, blog, {
-      new: true,
-      runValidators: true,
-      context: "query",
-    });
-    res.json(blogtobeupdated);
-  } catch (error) {
-    next(error);
+  if (blogUpdate.user._id.toString() === user._id.toString()) {
+    let blog = {
+      title: body.title,
+      author: body.author,
+      url: body.url,
+      likes: body.likes,
+    };
+
+    try {
+      const blogtobeupdated = await Blog.findByIdAndUpdate(
+        req.params.id,
+        blog,
+        {
+          new: true,
+          runValidators: true,
+          context: "query",
+        }
+      );
+      logger.info(`blog ${blog.title} updated successfully`);
+      res.json(blogtobeupdated);
+    } catch (error) {
+      next(error);
+    }
   }
 });
 

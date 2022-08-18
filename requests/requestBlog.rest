@@ -1,8 +1,8 @@
 post http://localhost:3003/api/blogs
 content-type:application/json
-Authorization:bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InplQSIsImlkIjoiNjJmYTFjYzRiOTg5YTBhODE3Yjk4ODg0IiwiaWF0IjoxNjYwNjQ3NjE2fQ.s2pDEHZpXXrZ6nkr96nZZwHIu283t0VOpdhvTUVLBso
+Authorization:bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imdlb20iLCJpZCI6IjYyZmRmNzY2NTY4MDU4ZTliODgzOTMxMiIsImlhdCI6MTY2MDgxMTEzOH0.nmEtz9HxSsB0ZWNaQQ1swgh77X_p43vAEGzikGB6dgY
 
-{ "title": "blog created after delete api update",
+{ "title": "blog created after unsuccessful login",
   "author": "healthy lady",
   "url": "http://healthyladyloveslife238974oerwm.com",
   "likes": "5"}
@@ -35,15 +35,15 @@ post http://localhost:3003/api/users
 content-type:application/json
 
 {
-    "username": "zeA",
-    "name": "Superuser",
-    "password": "theve"
+    "username": "geom",
+    "name": "name",
+    "password": "name"
 }
 ###
 post http://localhost:3003/api/login
 content-type:application/json
 
 {
-    "username": "zeA",
-    "password": "theve"
+    "username": "geo",
+    "password": "name"
 }
