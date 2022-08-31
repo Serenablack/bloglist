@@ -19,6 +19,7 @@ blogsRouter.get("/", async (request, response, next) => {
 blogsRouter.post("/", async (request, response, next) => {
   const blog = new Blog(request.body);
   // const username = request.user;
+
   // console.log(username);
   // const UsersInDb = await helper.usersInDb();
   // let randomUser = UsersInDb[Math.floor(Math.random() * UsersInDb.length)];
@@ -46,6 +47,7 @@ blogsRouter.post("/", async (request, response, next) => {
       user.blogs = user.blogs.concat(result._id);
       await user.save();
       response.status(201).json(result);
+      // response.send(username);
     } catch (error) {
       next(error);
     }
@@ -58,13 +60,11 @@ blogsRouter.delete("/:id", async (request, response, next) => {
 
   const user = await User.findById(decodedToken.id);
   const blogDelete = await Blog.findById(request.params.id);
-  console.log(blogDelete.user._id);
 
-  if (blogDelete.user._id.toString() === user._id.toString()) {
-    console.log("delete");
+  if (blogDelete.user.toString() === user.id.toString()) {
     await Blog.findByIdAndRemove(request.params.id);
     try {
-      response.status(204).end();
+      response.status(204).json("blog successfully deleted").end();
     } catch (error) {
       next(error);
     }
@@ -75,7 +75,7 @@ blogsRouter.delete("/:id", async (request, response, next) => {
 
 blogsRouter.put("/:id", async (req, res, next) => {
   const body = req.body;
-
+  console.log(body);
   if (!body.likes) {
     body["likes"] = 0;
   }
@@ -92,7 +92,6 @@ blogsRouter.put("/:id", async (req, res, next) => {
       url: body.url,
       likes: body.likes,
     };
-
     try {
       const blogtobeupdated = await Blog.findByIdAndUpdate(
         req.params.id,

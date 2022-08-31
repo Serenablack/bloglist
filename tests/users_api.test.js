@@ -39,6 +39,7 @@ describe("when there is initially one user in db", () => {
 
   test("user with username less than 3 characters long is not created", async () => {
     const usersAtStart = await helper.usersInDb();
+
     const newUser = {
       username: "ro",
       name: "Superuser",
@@ -50,9 +51,10 @@ describe("when there is initially one user in db", () => {
       .expect(400)
       .expect("Content-Type", /application\/json/);
     expect(result.body.error).toContain(
-      `is shorter than the minimum allowed length (3)`
+      `is shorter than the minimum allowed length (3).`
     );
     const usersAtEnd = await helper.usersInDb();
+
     expect(usersAtEnd).toEqual(usersAtStart);
   });
 
@@ -72,6 +74,7 @@ describe("when there is initially one user in db", () => {
       `is shorter than the minimum allowed length (3).`
     );
     const usersAtEnd = await helper.usersInDb();
+
     expect(usersAtEnd).toEqual(usersAtStart);
   });
 

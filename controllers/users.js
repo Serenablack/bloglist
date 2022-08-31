@@ -15,18 +15,19 @@ usersRouter.get("/", async (request, response) => {
 
 usersRouter.post("/", async (request, response, next) => {
   const { username, name, password } = request.body;
-  if (!(username || password) || password.length < 3) {
+  if (!(username || password) || password.length < 3 || username.length < 3) {
     return response.status(400).json({
       error: `User validation failed: username: Path password is shorter than the minimum allowed length (3).`,
     });
   } else {
     const existingUser = await User.findOne({ username });
+    // try {
     if (existingUser) {
       return response.status(400).json({
         error: "username must be unique",
       });
     }
-    // try {
+
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(password, saltRounds);
 

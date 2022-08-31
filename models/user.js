@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
-    minLength: 3,
+    // minLength: 3,
     required: true,
     // runValidators: true,
     // context: "query",

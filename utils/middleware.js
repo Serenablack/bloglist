@@ -1,4 +1,5 @@
 const logger = require("./logger");
+// const helper = require("../tests/test_helper");
 
 const requestLogger = (request, response, next) => {
   logger.info("Method:", request.method);
@@ -20,10 +21,16 @@ const tokenExtractor = (request, response, next) => {
   next();
 };
 
-// const userExtractor = (request, response, next) => {
-//   {
+// const userExtractor = async (request, response, next) => {
+//   const id = request.id;
+//   const users = await helper.usersInDb();
 
-//     request["user"] = user.username;
+//   const reqUser = users.filter(
+//     (blog) => id === blog.blogs.find((ID) => ID === id).id
+//   );
+
+//   {
+//     request["user"] = reqUser.name;
 //   }
 //   next();
 // };

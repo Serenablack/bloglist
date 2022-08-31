@@ -139,14 +139,30 @@ describe("deletion of a blog", () => {
   });
 
   test("succeeds with status code 204 if id is valid", async () => {
+    const createdBlog = {
+      title: "First class tests",
+      author: "Robert C. Martin",
+      url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
+    };
+
+    await api
+      .post("/api/blogs")
+      .send(createdBlog)
+      .set(token)
+      .expect(201)
+      .expect("Content-Type", /application\/json/);
+
     const blogsBefore = await helper.blogsInDb();
-    const blogToDelete = blogsBefore[0];
+
+    const blogToDelete = blogsBefore.find(
+      (blog) => blog.title === createdBlog.title
+    );
 
     await api.delete(`/api/blogs/${blogToDelete.id}`).set(token).expect(204);
 
     const blogsAfter = await helper.blogsInDb();
 
-    expect(blogsAfter).toHaveLength(helper.newBlog.length - 1);
+    expect(blogsAfter).toHaveLength(helper.newBlog.length);
 
     const title = blogsAfter.map((r) => r.title);
 
