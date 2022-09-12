@@ -35,7 +35,7 @@ post http://localhost:3003/api/users
 content-type:application/json
 
 {
-    "username": "gerry",
+    "username": "gery",
     "name": "name",
     "password": "name"
 }

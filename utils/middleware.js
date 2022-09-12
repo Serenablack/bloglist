@@ -1,5 +1,8 @@
 const logger = require("./logger");
+require("dotenv").config();
+
 // const helper = require("../tests/test_helper");
+const jwt = require("jsonwebtoken");
 
 const requestLogger = (request, response, next) => {
   logger.info("Method:", request.method);
@@ -21,19 +24,14 @@ const tokenExtractor = (request, response, next) => {
   next();
 };
 
-// const userExtractor = async (request, response, next) => {
-//   const id = request.id;
-//   const users = await helper.usersInDb();
+const userExtractor = async (request, response, next) => {
+  if (request.token) {
+    const user = jwt.verify(request.token, process.env.SECRET);
+    request["user"] = user.username;
+  }
+  next();
+};
 
-//   const reqUser = users.filter(
-//     (blog) => id === blog.blogs.find((ID) => ID === id).id
-//   );
-
-//   {
-//     request["user"] = reqUser.name;
-//   }
-//   next();
-// };
 const errorHandler = (error, request, response, next) => {
   logger.error(error.message);
 
@@ -59,5 +57,5 @@ module.exports = {
   unknownEndpoint,
   errorHandler,
   tokenExtractor,
-  // userExtractor,
+  userExtractor,
 };
