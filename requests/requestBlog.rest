@@ -20,7 +20,7 @@ content-type:application/json
   "author": "healthy lady",
   "likes": "2500000"}
 ###
-delete http://localhost:3003/api/blogs/62fa0001b83bdbff66305683
+delete http://localhost:3003/api/blogs/62fe0b95026406ae84fb85f0
 ###
 delete http://localhost:3003/api/blogs/62fe0648026406ae84fb85da
 Authorization:bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imdlb20iLCJpZCI6IjYyZmRmNzY2NTY4MDU4ZTliODgzOTMxMiIsImlhdCI6MTY2MTg0Nzc2MH0.eW_QMOGMZDpMWscW1vB9xiymYmoXLKpsqJQ0aAeqD5o
@@ -47,3 +47,14 @@ content-type:application/json
     "username": "geom",
     "password": "name"
 }
+###
+
+  post http://localhost:3003/blog/api/blogs/6322ec58d1e2ef2f5d27bd3b/comments
+content-type:application/json
+
+{ 
+ "comment":"its refreshing."}
+
+###
+
+ get http://localhost:3003/api/blogs/6322ec58d1e2ef2f5d27bd3b/comments
